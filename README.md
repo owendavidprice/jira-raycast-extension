@@ -1,6 +1,6 @@
-# Jira Raycast Extension
+# Jira for Windows - Raycast Extension
 
-Create and review Jira tasks directly from Raycast.
+A Windows-optimized Raycast extension for managing Jira tasks with native Ctrl shortcuts and Windows 11 design.
 
 ## Features
 
