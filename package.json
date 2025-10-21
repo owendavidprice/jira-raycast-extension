@@ -1,8 +1,8 @@
 {
   "$schema": "https://www.raycast.com/schemas/extension.json",
-  "name": "jira",
-  "title": "Jira",
-  "description": "Create and edit tasks in Jira via Raycast.",
+  "name": "jira-for-windows",
+  "title": "Jira for Windows",
+  "description": "Windows-optimized Jira task manager with Ctrl shortcuts. Create and review tasks with a streamlined interface.",
   "icon": "extension-icon.png",
   "license": "MIT",
   "commands": [
