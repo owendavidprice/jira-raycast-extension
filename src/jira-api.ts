@@ -93,8 +93,21 @@ export class JiraAPI {
 
   constructor() {
     const preferences = getPreferenceValues<Preferences>();
-    this.domain = preferences.jiraDomain.replace(/^https?:\/\//, "").replace(/\/$/, "");
-    const auth = Buffer.from(`${preferences.email}:${preferences.apiToken}`).toString("base64");
+
+    // Fallback to environment variables if preferences are empty or not persisting
+    // This is a workaround for Raycast Windows preferences issue
+    const jiraDomain = preferences.jiraDomain || process.env.JIRA_DOMAIN || "";
+    const email = preferences.email || process.env.JIRA_EMAIL || "";
+    const apiToken = preferences.apiToken || process.env.JIRA_API_TOKEN || "";
+
+    if (!jiraDomain || !email || !apiToken) {
+      throw new Error(
+        "Jira credentials not configured. Please set them in Raycast preferences or as environment variables (JIRA_DOMAIN, JIRA_EMAIL, JIRA_API_TOKEN).",
+      );
+    }
+
+    this.domain = jiraDomain.replace(/^https?:\/\//, "").replace(/\/$/, "");
+    const auth = Buffer.from(`${email}:${apiToken}`).toString("base64");
     this.authHeader = `Basic ${auth}`;
   }
 
@@ -222,6 +235,17 @@ export class JiraAPI {
     return response.issues;
   }
 
+  async getProjectIssues(projectKey: string): Promise<JiraIssue[]> {
+    const jql = `project = ${projectKey} AND resolution = Unresolved ORDER BY duedate ASC, created DESC`;
+    // Use the new /search/jql endpoint (API v3)
+    const response = await this.request<{ issues: JiraIssue[] }>(
+      `/search/jql?jql=${encodeURIComponent(jql)}&fields=summary,description,status,priority,project,duedate,labels,assignee,created,updated`,
+      {},
+      3,
+    );
+    return response.issues;
+  }
+
   async getExistingLabels(projectKey: string): Promise<string[]> {
     // Search for issues in the project to get labels
     const jql = `project = ${projectKey}`;
@@ -285,5 +309,18 @@ export class JiraAPI {
         `No "Done" transition available for ${issueKey}. Available transitions: ${transitions.map((t) => t.name).join(", ")}`,
       );
     }
+  }
+
+  async addComment(issueKey: string, comment: string): Promise<void> {
+    await this.request<void>(
+      `/issue/${issueKey}/comment`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          body: comment,
+        }),
+      },
+      3,
+    );
   }
 }

@@ -17,6 +17,12 @@
       "title": "Review Tasks",
       "description": "View tasks assigned to you, sorted by deadline",
       "mode": "view"
+    },
+    {
+      "name": "project-overview",
+      "title": "Project Overview",
+      "description": "View all outstanding tasks in a project - select project from dropdown",
+      "mode": "view"
     }
   ],
   "preferences": [
@@ -26,7 +32,8 @@
       "required": true,
       "title": "Jira Domain",
       "description": "Your Jira domain (e.g., yourcompany.atlassian.net)",
-      "placeholder": "yourcompany.atlassian.net"
+      "placeholder": "yourcompany.atlassian.net",
+      "default": ""
     },
     {
       "name": "email",
@@ -34,7 +41,8 @@
       "required": true,
       "title": "Email",
       "description": "Your Atlassian account email",
-      "placeholder": "your.email@company.com"
+      "placeholder": "your.email@company.com",
+      "default": ""
     },
     {
       "name": "apiToken",
@@ -42,7 +50,17 @@
       "required": true,
       "title": "API Token",
       "description": "Your Jira API token (generate at https://id.atlassian.com/manage-profile/security/api-tokens)",
-      "placeholder": "Enter your API token"
+      "placeholder": "Enter your API token",
+      "default": ""
+    },
+    {
+      "name": "defaultProject",
+      "type": "textfield",
+      "required": false,
+      "title": "Default Project",
+      "description": "Default project key to use when creating tasks (e.g., PROJ)",
+      "placeholder": "Enter project key (optional)",
+      "default": ""
     }
   ],
   "dependencies": {

@@ -2,6 +2,29 @@
 
 All notable changes to the Jira Raycast Extension will be documented in this file.
 
+## [1.2.0] - 2025-10-26
+
+### Added
+- **Project Overview** command
+  - Select a project from a dropdown to view all unresolved tasks
+  - Sorted by due date (overdue first), with clear visual indicators
+  - Quick actions: Open in Jira, Copy Issue Key/URL
+  - Keyboard shortcuts: `Ctrl+D` (Mark as Done), `Ctrl+T` (Change Status), `Ctrl+M` (Add Comment), `Ctrl+R` (Refresh)
+- **Add Comment** action in Project Overview
+  - Submit comments directly to issues via a focused form (`Ctrl+Enter`)
+  - Success and error toasts with clear messaging
+
+### Changed
+- Status colors and due date indicators refined for clarity in list items
+- Improved error handling and empty states in Project Overview
+
+### Technical
+- New APIs in `jira-api.ts`:
+  - `getProjectIssues(projectKey)` to fetch unresolved project issues
+  - `addComment(issueKey, comment)` to post comments
+  - Reused `getTransitions`, `transitionIssue`, and `markAsDone` for consistency
+- Uses Jira REST API v3 for search and transitions
+
 ## [1.1.0] - 2025-10-21
 
 ### Added

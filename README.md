@@ -24,6 +24,24 @@ View and manage all tasks assigned to you:
 - **Refresh**: Reload the task list (Ctrl+R)
 - Quick actions to open in Jira or copy task details
 
+### 3. Project Overview
+View and manage all outstanding tasks in any project:
+- **Project Selector**: Dropdown to switch between projects
+- Sorted by due date (overdue tasks first)
+- Shows all unresolved tasks in the selected project
+- **Mark as Done**: Complete tasks (Ctrl+D)
+- **Change Status**: Transition tasks (Ctrl+T)
+- **Add Comment**: Add comments to tasks (Ctrl+M)
+- **Refresh**: Reload the task list (Ctrl+R)
+- Copy actions for issue keys and URLs
+
+### 4. Configure Extension
+Interactive form to setup your Jira credentials:
+- Auto-focus on first field for immediate typing
+- Workaround for preference input issues
+- Copies configuration to clipboard
+- Quick link to API token generation page
+
 ## Setup
 
 ### 1. Generate Jira API Token
@@ -36,11 +54,32 @@ View and manage all tasks assigned to you:
 
 ### 2. Configure Extension
 
-Open Raycast preferences for the Jira extension and enter:
+**Option A: Raycast Preferences (Recommended)**
 
+Open Raycast preferences for the Jira extension and enter:
 - **Jira Domain**: Your Jira domain (e.g., `yourcompany.atlassian.net`)
 - **Email**: Your Atlassian account email
 - **API Token**: The token you generated in step 1
+
+**Option B: Environment Variables (Workaround for Windows Issues)**
+
+If Raycast preferences are not persisting on Windows, use environment variables:
+
+1. Run the setup script (from PowerShell):
+   ```powershell
+   .\setup-credentials.ps1
+   ```
+
+2. Or manually set environment variables:
+   ```powershell
+   [Environment]::SetEnvironmentVariable("JIRA_DOMAIN", "yourcompany.atlassian.net", "User")
+   [Environment]::SetEnvironmentVariable("JIRA_EMAIL", "your.email@company.com", "User")
+   [Environment]::SetEnvironmentVariable("JIRA_API_TOKEN", "your-api-token", "User")
+   ```
+
+3. Restart Raycast for changes to take effect
+
+The extension will automatically use environment variables if preferences are empty.
 
 ## Usage
 
@@ -73,12 +112,38 @@ Open Raycast preferences for the Jira extension and enter:
    - Press `Ctrl + C` to copy the issue key
    - Press `Ctrl + Shift + C` to copy the issue URL
 
+## Keyboard Shortcuts
+
+All commands support full keyboard navigation with Windows-native shortcuts:
+
+### Review Tasks & Project Overview
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+D` | Mark as Done |
+| `Ctrl+T` | Change Status |
+| `Ctrl+M` | Add Comment (Project Overview only) |
+| `Ctrl+R` | Refresh |
+| `Ctrl+C` | Copy Issue Key |
+| `Ctrl+Shift+C` | Copy Issue URL |
+| `Enter` | Open in Jira |
+
+### Create Task & Forms
+| Shortcut | Action |
+|----------|--------|
+| `Ctrl+Enter` | Submit Form |
+| `Tab` | Next Field |
+| `Shift+Tab` | Previous Field |
+| `Escape` | Cancel/Go Back |
+
+**See `KEYBOARD_SHORTCUTS.md` for the complete guide**
+
 ## Features
 
 - **Smart Deadline Options**: Quick selections for common deadlines
 - **Dynamic Form Fields**: Issue types and labels load based on selected project
 - **Color-Coded Status**: Visual indicators for task urgency
 - **Status Management**: Mark tasks as done or change to any available status
+- **Comment Support**: Add comments directly from Project Overview
 - **Workflow Transitions**: Automatically detects and presents available status transitions
 - **Auto-Refresh**: Task list updates automatically after status changes
 - **Windows Keyboard Shortcuts**: Fast navigation with Windows-native Ctrl shortcuts
