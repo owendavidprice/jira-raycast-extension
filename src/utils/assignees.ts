@@ -1,31 +1,49 @@
 import { LocalStorage } from "@raycast/api";
 
-type AssigneeFrequencyMap = Record<string, { count: number; label: string }>;
+interface AssigneeFrequencyEntry {
+  label: string;
+  count: number;
+}
 
-const ASSIGNEE_FREQ_KEY = "assignee-frequency";
+type AssigneeFrequencyMap = Record<string, AssigneeFrequencyEntry>;
 
-export async function getAssigneeFrequencies(): Promise<AssigneeFrequencyMap> {
+const STORAGE_KEY = "assignee_frequencies";
+
+async function readMap(): Promise<AssigneeFrequencyMap> {
+  const raw = await LocalStorage.getItem<string>(STORAGE_KEY);
+  if (!raw) return {};
   try {
-    const raw = await LocalStorage.getItem<string>(ASSIGNEE_FREQ_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw) as AssigneeFrequencyMap;
+    const parsed = JSON.parse(raw) as AssigneeFrequencyMap;
+    return parsed && typeof parsed === "object" ? parsed : {};
   } catch {
     return {};
   }
 }
 
-export async function incrementAssigneeFrequency(id: string, label: string) {
-  const map = await getAssigneeFrequencies();
-  const entry = map[id];
-  map[id] = { count: (entry?.count ?? 0) + 1, label: entry?.label ?? label };
-  await LocalStorage.setItem(ASSIGNEE_FREQ_KEY, JSON.stringify(map));
+async function writeMap(map: AssigneeFrequencyMap): Promise<void> {
+  await LocalStorage.setItem(STORAGE_KEY, JSON.stringify(map));
 }
 
-export async function ensureAssigneeKnown(id: string, label: string) {
-  const map = await getAssigneeFrequencies();
-  if (!map[id]) {
-    map[id] = { count: 0, label };
-    await LocalStorage.setItem(ASSIGNEE_FREQ_KEY, JSON.stringify(map));
+export async function getAssigneeFrequencies(): Promise<AssigneeFrequencyMap> {
+  return await readMap();
+}
+
+export async function incrementAssigneeFrequency(id: string, label: string): Promise<void> {
+  if (!id) return;
+  const map = await readMap();
+  const key = id.toLowerCase();
+  const current = map[key] || { label, count: 0 };
+  map[key] = { label: current.label || label, count: (current.count || 0) + 1 };
+  await writeMap(map);
+}
+
+export async function ensureAssigneeKnown(id: string, label: string): Promise<void> {
+  if (!id) return;
+  const map = await readMap();
+  const key = id.toLowerCase();
+  if (!map[key]) {
+    map[key] = { label, count: 0 };
+    await writeMap(map);
   }
 }
 
